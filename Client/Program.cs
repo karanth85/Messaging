@@ -38,13 +38,17 @@
 
             var msgContent = Messages.Split(',');
 
-            switch (options.messageQueue)
+            Key source;
+
+            Enum.TryParse(options.messageQueue, out source);
+
+            switch (source)
             {
-                case "ZeroMq":
+                case Key.ZeroMq:
                     ZeroMq(options, msgContent);
                     break;
 
-                case "RabbitMq":
+                case Key.RabbitMq:
                     RabbitMq(options, msgContent);
                     break;
             }
@@ -127,6 +131,5 @@
                 }
             }
         }
-
     }
 }

@@ -84,10 +84,10 @@
       <Link>App.config</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="ClientServer_Scenario2.bat">
+    <None Include="ClientServer_Rbmq_Scenario2.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="ClientServer_Scenario1.bat">
+    <None Include="ClientServer_Zmq_Scenario1.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />

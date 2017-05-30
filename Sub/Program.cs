@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Text;
 
+    using Common;
     using CommandLine;
     using DataAccess;
     using KafkaNet;
@@ -31,18 +32,22 @@
 
             if (!parser.ParseArguments(args, options))
                 Environment.Exit(1);
-            
-            switch (options.messageQueue)
+
+            Key source;
+
+            Enum.TryParse(options.messageQueue, out source);
+
+            switch (source)
             {
-                case "Kafka":
+                case Key.Kafka:
                     Kafka(options);
                     break;
 
-                case "RabbitMq":
+                case Key.RabbitMq:
                     RabbitMq(options);
                     break;
 
-                case "ZeroMq":
+                case Key.ZeroMq:
                     ZeroMq(options);
                     break;                
             }                            

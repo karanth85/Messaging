@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Text;
 
+    using Common;
     using CommandLine;
     using DataAccess;
     using Model;
@@ -29,13 +30,17 @@
             if (!parser.ParseArguments(args, options))
                 Environment.Exit(1);
 
-            switch (options.messageQueue)
+            Key source;
+
+            Enum.TryParse(options.messageQueue, out source);
+
+            switch (source)
             {
-                case "ZeroMq":
+                case Key.ZeroMq:
                     ZeroMq();
                     break;
 
-                case "RabbitMq":
+                case Key.RabbitMq:
                     RabbitMq();
                     break;
             }
