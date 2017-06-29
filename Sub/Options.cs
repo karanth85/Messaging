@@ -1,9 +1,7 @@
-﻿namespace Sub
+﻿namespace Subscribe
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using CommandLine;
     using CommandLine.Text;
 

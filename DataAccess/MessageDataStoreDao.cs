@@ -1,13 +1,10 @@
-﻿using System;
-using System.Configuration;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using Model;
-
-namespace DataAccess
+﻿namespace DataAccess
 {
+    using System;
+    using System.Configuration;
+    using System.Data.SqlClient;
+    using Model;
+
     public static class MessageDataStoreDao
     {
         private const string TableName = "tblMessageStore";

@@ -1,10 +1,9 @@
-﻿namespace Pub
+﻿namespace Publish
 {
     using System;
     using System.Collections.Generic;
     using System.Configuration;
     using System.IO;
-    using System.Linq;
     using System.Text;    
     using System.Threading;
 
@@ -12,8 +11,6 @@
     using CommandLine;
     using KafkaNet;
     using KafkaNet.Model;
-    using KafkaNet.Protocol;
-    using Model;
     using Newtonsoft.Json;
     using RabbitMQ.Client;
     using ZeroMQ;
@@ -62,17 +59,19 @@
             var kafkaOptions = new KafkaOptions(new Uri(KafkaEndpoint));
             var router = new BrokerRouter(kafkaOptions);
             var client = new Producer(router);
-
+                    
+            int sequence = 1;
             foreach (var sub in options.publishedTopics)
-            {    
+            {
                 int i = 1;
+                Console.WriteLine("Publishing Topic: " + sub);
                 while (i < options.totalMessages + 1)
                 {
                     var pubMessage = GetJSONData(Key.Kafka.ToString(), sub, options.fileData);
-                                
-                    Console.WriteLine(string.Format("Publishing Topic : {0}", sub));
+                    
                     client.SendMessageAsync(sub, new[] { new KafkaNet.Protocol.Message(pubMessage) });
-                    Console.WriteLine(string.Format("Published Message : {0}", i));
+                    Console.WriteLine(string.Format("Seq #{0} Published Topic : {1}", sequence, sub));
+                    sequence++;    
                     i++;                   
                 }
             }
@@ -86,17 +85,19 @@
             {
                 channel.ExchangeDeclare(exchange: "pub.api", type: "topic");
 
+                int sequence = 1;
                 foreach (var sub in options.publishedTopics)
                 {
                     int i = 1;
-
+                    Console.WriteLine("Publishing Topic: " + sub);
                     while (i < options.totalMessages + 1)
                     {
                         var pubMessage = GetJSONData(Key.RabbitMq.ToString(), sub, options.fileData);
                        
                         var body = Encoding.UTF8.GetBytes(pubMessage);
                         channel.BasicPublish(exchange: "pub.api", routingKey: sub, basicProperties: null, body: body);
-                        Console.WriteLine(string.Format("Publishing Topic : {0}", sub));                                                
+                        Console.WriteLine(string.Format("Seq #{0} Published Topic : {1}", sequence, sub));
+                        sequence++;                               
                         i++;
                     }
                 }
@@ -110,6 +111,10 @@
                 using (var socket = context.CreateSocket(SocketType.PUB))
                 {
                     socket.Bind(Endpoint);
+                    
+                    int sequence = 1;
+
+                    var transSummary = new Dictionary<string, int>();
 
                     //To prevent losing published messages
                     Thread.Sleep(1000);
@@ -117,7 +122,6 @@
                     foreach (var sub in options.publishedTopics)
                     {
                         int i = 1;
-
                         while (i < options.totalMessages + 1)
                         {
                             var pubMessage = GetJSONData(Key.ZeroMq.ToString(), sub, options.fileData);
@@ -125,13 +129,20 @@
                             var zmqMessage = new ZmqMessage();
                             zmqMessage.Append(Encoding.UTF8.GetBytes(sub));
                             zmqMessage.Append(Encoding.UTF8.GetBytes(pubMessage));
-
-                            Console.WriteLine(string.Format("Publishing Topic : {0}", sub));
+                                                       
                             socket.SendMessage(zmqMessage);
-                            Console.WriteLine("Published");
+                            Console.WriteLine(string.Format("Seq #{0} Published Topic : {1}", sequence, sub));
+                            sequence++;
                             i++;
                         }
+                        transSummary.Add(sub, i-1);                        
                     }
+
+                    Console.WriteLine("===========Summary Total===========");
+                    foreach (var key in transSummary)
+                    {
+                        Console.WriteLine(string.Format("'{0}' Topic Published : {1}", key.Key, key.Value));
+                    }                   
                 }
             }
         }        

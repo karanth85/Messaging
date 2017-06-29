@@ -1,7 +1,6 @@
-﻿namespace Sub
+﻿namespace Subscribe
 {
     using System;
-    using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
     using System.Text;
@@ -57,7 +56,8 @@
         {
             var kafkaOptions = new KafkaOptions(new Uri(KafkaEndpoint));
             var router = new BrokerRouter(kafkaOptions);
-            
+
+            int sequence = 1;
             foreach (var topic in options.subscribedTopics)
             {
                 var consumer = new Consumer(new ConsumerOptions(topic, new BrokerRouter(kafkaOptions)));
@@ -71,6 +71,8 @@
                     msgData.Received = DateTime.UtcNow;
 
                     MessageDataStoreDao.InsertRecord(msgData);
+                    Console.WriteLine(string.Format("Seq #{0} Received Topic : {1}", sequence, topic));
+                    sequence++;
                 }
             }
         }
@@ -96,8 +98,9 @@
                     {
                         channel.QueueBind(queue: queueName, exchange: "pub.api", routingKey: topic);
                     }
-                }                
+                }
 
+                int sequence = 1;
                 var consumer = new EventingBasicConsumer(channel);
                 consumer.Received += (model, ea) =>
                 {
@@ -107,7 +110,8 @@
                     message.Received = DateTime.UtcNow;
                     
                     MessageDataStoreDao.InsertRecord(message);
-                    Console.WriteLine("Received Topic Message: " + Encoding.UTF8.GetString(body));
+                    Console.WriteLine(string.Format("Seq #{0} Received Topic : {1}", sequence, ea.RoutingKey));
+                    sequence++;
                 };
                 channel.BasicConsume(queue: queueName, noAck: true, consumer: consumer);
                 
@@ -135,6 +139,8 @@
 
                     socket.Connect(Endpoint);
 
+                    int sequence = 1;
+
                     while (true)
                     {
                         Console.WriteLine("Receiving Subscribed Topic.");
@@ -142,8 +148,9 @@
                         var message = JsonConvert.DeserializeObject<Message>(Encoding.UTF8.GetString(msg[1]));
                         message.Received = DateTime.UtcNow;
 
-                        MessageDataStoreDao.InsertRecord(message);
-                        Console.WriteLine("Received Topic: " + Encoding.UTF8.GetString(msg[0]));
+                        MessageDataStoreDao.InsertRecord(message);                        
+                        Console.WriteLine(string.Format("Seq #{0} Received Topic : {1}", sequence, Encoding.UTF8.GetString(msg[0])));
+                        sequence++;
                     }
                 }
             }  

@@ -1,11 +1,8 @@
 ﻿namespace Client
 {
     using System;
-    using System.Collections.Generic;
     using System.Configuration;
-    using System.Linq;
     using System.Text;
-    using System.Threading;
 
     using Common;
     using CommandLine;
@@ -13,7 +10,6 @@
     using Model;
     using Newtonsoft.Json;
     using RabbitMQ.Client;
-    using RabbitMQ.Client.Events;
 
     /// <summary>
     /// ZeroMq Client Program

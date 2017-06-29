@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{BDC18630-0DE7-4121-9E11-D7901BCD20D8}</ProjectGuid>
+    <ProjectGuid>{D94F11AA-2086-4F6E-9856-E9DD26E01DC1}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Sub</RootNamespace>
-    <AssemblyName>Sub</AssemblyName>
+    <RootNamespace>Pub</RootNamespace>
+    <AssemblyName>Pub</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -48,6 +48,7 @@
     <Reference Include="kafka-net">
       <HintPath>..\packages\kafka-net.0.9.0.65\lib\net45\kafka-net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -60,7 +61,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -70,8 +70,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\Common\libzmq.dll">
+    <Content Include="..\Common\lib\libzmq.dll">
       <Link>libzmq.dll</Link>
+    </Content>
+    <Content Include="pub_data.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -79,17 +81,23 @@
     <None Include="..\Common\App.config">
       <Link>App.config</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="PubSub_KF_Scenario2.bat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="PubSub_Rbmq_Scenario3.bat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="PubSub_Zmq_Scenario1.bat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{0ed61360-df92-4901-86e7-338702d0805e}</Project>
+      <Project>{0ED61360-DF92-4901-86E7-338702D0805E}</Project>
       <Name>Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DataAccess\DataAccess.csproj">
-      <Project>{458874E3-5FE1-4171-B0F9-18E473AD28A1}</Project>
-      <Name>DataAccess</Name>
     </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{8BDDE179-3B88-42EA-807A-33884DF61638}</Project>
